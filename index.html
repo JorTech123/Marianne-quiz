@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mariannes store quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: pool-party colours from the summer photo; blurred photo fixed behind translucent cards */
+:root{
+  --bg:#e3f3f8; --veil:rgba(236,248,251,.18); --surface:rgba(255,255,255,.86); --ink:#0f2e3a; --muted:#46636d;
+  --sage:#0b7fa6; --sage-soft:#d3eef6; --blush:#c2549f; --blush-soft:#fbe3f2; --sun:#f1d24a; --line:#c4e0e9; --on-primary:#ffffff;
+  --display:"Young Serif", Georgia, serif; --body:"Figtree", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#06222c; --veil:rgba(4,24,32,.5); --surface:rgba(9,36,46,.88); --ink:#e6f6fa; --muted:#9cc3cf;
+  --sage:#5fcdea; --sage-soft:#0f3b4a; --blush:#f29bd6; --blush-soft:#3d1d33; --sun:#f1d24a; --line:#1e4a58; --on-primary:#062a36; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#06222c; --veil:rgba(4,24,32,.5); --surface:rgba(9,36,46,.88); --ink:#e6f6fa; --muted:#9cc3cf;
+  --sage:#5fcdea; --sage-soft:#0f3b4a; --blush:#f29bd6; --blush-soft:#3d1d33; --sun:#f1d24a; --line:#1e4a58; --on-primary:#062a36; color-scheme:dark}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(var(--veil),var(--veil)),url(data:image/jpeg;base64,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) center/cover no-repeat}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:24px 48px}
+header{background:var(--surface);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:18px;padding:18px 22px;box-shadow:0 6px 24px rgba(11,60,80,.12)}
+.banner,.wrap>.meta,.wrap>.progress{position:relative}
+.wrap>.meta{background:var(--surface);border-radius:12px;padding:6px 12px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--muted);margin-top:6px}
+.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);font-weight:700}
+.card{background:var(--surface);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 6px 24px rgba(11,60,80,.12);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.progress{display:flex;gap:3px}
+.progress span{flex:1;height:6px;border-radius:3px;background:var(--surface)}
+.progress span.done{background:var(--sage)}
+.progress span.now{background:var(--sun)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--sage-soft);color:var(--sage)}
+.tag.m{background:var(--blush-soft);color:var(--blush)}
+.q{font-family:var(--display);font-size:clamp(1.3rem,4.5vw,1.6rem);line-height:1.25;margin:0;text-wrap:balance}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:460px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;gap:10px;align-items:baseline;text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:500;min-width:0;background:var(--surface);color:var(--ink)}
+.opt b{color:var(--muted);font-weight:700}
+.opt.sel{border-color:var(--sage);background:var(--sage-soft)}
+.opt.sel b{color:var(--sage)}
+.note{border:1.5px dashed var(--blush);border-radius:12px;padding:12px 14px;color:var(--muted);background:var(--blush-soft);font-size:.95rem}
+input[type=text],input[type=number]{width:100%;font:inherit;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row .grow{flex:1}
+button{font:inherit;font-weight:600;border-radius:12px;padding:11px 18px;cursor:pointer;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+button.primary{background:var(--blush);border-color:var(--blush);color:var(--on-primary)}
+button.ghost{background:transparent}
+button.warn{border-color:var(--blush);color:var(--blush)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--blush);outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .n{flex:1;min-width:0;font-weight:600;overflow-wrap:anywhere}
+.li .s{font-variant-numeric:tabular-nums;font-family:var(--display);font-size:1.3rem}
+.pill{font-size:.75rem;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--sage-soft);color:var(--sage)}
+.pill.open{background:var(--blush-soft);color:var(--blush)}
+.winner{text-align:center;padding:26px 22px;background:var(--sage-soft);border-color:var(--sage)}
+.winner{background:linear-gradient(135deg,var(--blush-soft),var(--sage-soft))}
+.winner .crown{font-family:var(--display);font-size:clamp(2rem,8vw,3rem);line-height:1.1;color:var(--sage);overflow-wrap:anywhere}
+.rank{width:1.6em;color:var(--muted);font-variant-numeric:tabular-nums}
+.guess{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.guess:last-child{border-bottom:0}
+.guess .who{font-weight:600;min-width:5.5em}
+.guess .what{flex:1;min-width:0;overflow-wrap:anywhere;color:var(--muted)}
+.guess button{padding:5px 12px;font-size:.9rem}
+.guess button.on{background:var(--sage);border-color:var(--sage);color:var(--on-primary)}
+.fq{display:flex;flex-direction:column;gap:10px;padding-block:14px;border-bottom:1px solid var(--line)}
+.fq:last-child{border-bottom:0}
+.fq .t{font-weight:600}
+.small{font-size:.85rem;color:var(--muted)}
+.empty{color:var(--muted);font-style:italic}
+@media (prefers-reduced-motion:no-preference){.card{animation:in .3s ease}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
+.banner{border:1.5px solid var(--blush);background:var(--blush-soft);color:var(--ink);border-radius:12px;padding:10px 14px;font-size:.9rem;margin:0}
+.err{color:var(--blush);font-weight:600}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ===== Innstillinger ===== */
+const API_URL = "https://script.google.com/macros/s/AKfycbzNep_KsRk0CbDDchw-tlFzLffxG-YaV4yhw-PyPJx4aSCOXQhGJ8DteeuAASCVZ9JA/exec";      // Lim inn nettapp-adressen fra Google Apps Script mellom anførselstegnene
+const PIN = "brud";      // Kode for quizmaster og Marianne (fasit og kåring)
+
+const Q = [
+  {id:"f1",cat:"Fødselen",q:"Hvilken dato ble Marianne født?",o:["20. mai 1982","2. mai 1982","2. juni 1982","2. mai 1983"],a:1},
+  {id:"f2",cat:"Fødselen",q:"Hvilken by ble hun født i?",o:["Drammen","Lillehammer","Oslo","Bergen"],a:2},
+  {id:"f3",cat:"Fødselen",q:"Hvor mye veide hun da hun kom til verden?",o:["2950 gram","3400 gram","3850 gram","4200 gram"],a:1},
+  {id:"f4",cat:"Fødselen",q:"Hvor lang var hun?",o:["48 cm","50 cm","52 cm","55 cm"],a:2},
+  {id:"f5",cat:"Fødselen",q:"Hva var klokka da hun ble født?",o:["06.45 om morgenen","14.10 på ettermiddagen","21.20 på kvelden","23.55, rett før midnatt"],a:2},
+  {id:"f6",cat:"Fødselen",q:"Hvilket stjernetegn er Marianne?",o:["Vær","Tvilling","Tyr","Kreps"],a:2},
+  {id:"c1",cat:"Claus",q:"Hva heter Mariannes forlovede til etternavn?",o:["Hagen","Hygen","Haugen","Hylland"],a:1},
+  {id:"c2",cat:"Claus",q:"Hvor møtte Marianne og Claus hverandre?",o:["På Tinder","På jobb i Disney","På en fest i New York","På studiet"],a:1},
+  {id:"c3",cat:"Claus",q:"Hva var de for hverandre i starten?",o:["Kjærester fra første dag","Kolleger som ikke tålte hverandre","Gode venner","Naboer"],a:2},
+  {id:"c4",cat:"Claus",q:"Hvor var Marianne da det endelig oppsto søt musikk?",o:["På studieopphold i New York","På ferie i Paris","På Disney World i Florida","På hytta"],a:0},
+  {id:"c5",cat:"Claus",q:"Hva gjorde Claus som fikk det til å klaffe?",o:["Sendte et kjærlighetsbrev","Overrasket henne med besøk i New York","Fridde på et Disney-slott","Ringte henne hver kveld i et år"],a:1},
+  {id:"c6",cat:"Claus",q:"Marianne har alltid sagt at hvis Claus ikke fridde innen hun fylte en viss alder, ville hun ikke gifte seg. Hvilken alder?",o:["30 år","35 år","40 år","45 år"],a:2},
+  {id:"m1",cat:"Marianne svarer",m:true,num:true,q:"Hvor mange år har Marianne og Claus vært sammen?",hint:"Skriv et tall. Den som er nærmest Mariannes svar får poenget."},
+  {id:"m2",cat:"Marianne svarer",m:true,q:"Hvor mange kjæledyr har Marianne hatt, og hva het de?",hint:"Skriv antall og så mange navn du husker."},
+  {id:"m3",cat:"Marianne svarer",m:true,q:"Hva het Mariannes første kjæreste?"},
+  {id:"m4",cat:"Marianne svarer",m:true,q:"Hvem ville Marianne tatt med seg på en øde øy?"},
+  {id:"m5",cat:"Marianne svarer",m:true,q:"Hvis Marianne fikk 10 millioner kroner, hva ville hun brukt dem på?",o:["Drømmehus med spa i kjelleren","Jorda rundt, med første stopp i New York","Sesongkort til alle Disney-parkene i verden"]},
+  {id:"m6",cat:"Marianne svarer",m:true,q:"Hva irriterer Marianne mest?",o:["Folk som kommer for sent","Sokker som blir liggende på gulvet","Folk som tygger med åpen munn","Når Claus sier «vi får se»"]},
+  {id:"m7",cat:"Marianne svarer",m:true,q:"Hva var det første Marianne tenkte da Claus dukket opp i New York?"},
+  {id:"m8",cat:"Marianne svarer",m:true,q:"Hvilken Disney-figur ligner Claus mest på?"},
+  {id:"m9",cat:"Marianne svarer",m:true,q:"Hvem sa «jeg elsker deg» først?",o:["Marianne","Claus"]}
+];
+const L="ABCD";
+const CLOUD=!!API_URL;
+const K_LOCAL="mq-local-v3", K_ME="mq-me-v3", K_HOST="mq-host-v3";
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isOpen=q=>!q.o&&!q.num;
+const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}};
+const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+
+let S={players:[],fasit:{},awards:{}}, loaded=false, loadErr="";
+let me=lsGet(K_ME);           // denne telefonens deltaker: {name, answers, qi, done}
+let host=!!lsGet(K_HOST);
+let view="home", confirmReset=false, gateTarget="results", saveMsg="";
+
+/* ===== Lagring ===== */
+function norm(j){return {players:Array.isArray(j.players)?j.players:[],fasit:j.fasit||{},awards:j.awards||{}}}
+async function load(){
+  try{
+    if(CLOUD){const r=await fetch(API_URL+"?t="+Date.now());const j=await r.json();if(j.error)throw new Error(j.error);S=norm(j);}
+    else{const s=lsGet(K_LOCAL);if(s)S=norm(s);}
+    loaded=true;loadErr="";
+  }catch(e){loaded=true;loadErr="Fikk ikke kontakt med lagringen. Sjekk at du har nett, og prøv igjen.";}
+}
+function applyLocal(b){
+  if(b.type==="player"){const p=S.players.find(x=>x.name.toLowerCase()===b.player.name.toLowerCase());
+    const row={name:b.player.name,done:!!b.player.done,t:Date.now(),answers:b.player.answers||{}};
+    if(p)Object.assign(p,row);else S.players.push(row);}
+  if(b.type==="fasit")S.fasit=b.fasit;
+  if(b.type==="awards")S.awards=b.awards;
+  if(b.type==="reset")S={players:[],fasit:{},awards:{}};
+  lsSet(K_LOCAL,S);
+}
+async function send(b){
+  if(!CLOUD){applyLocal(b);return;}
+  const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(b)});
+  const j=await r.json(); if(j.error)throw new Error(j.error); S=norm(j);
+}
+const findPlayer=n=>S.players.find(p=>p.name.toLowerCase()===n.toLowerCase());
+function saveMe(){lsSet(K_ME,me);}
+
+/* ===== Poeng ===== */
+function done(){return S.players.filter(p=>p.done);}
+function numWinners(q){
+  const f=parseFloat(S.fasit[q.id]); if(isNaN(f))return [];
+  let best=Infinity,w=[];
+  done().forEach(p=>{const v=parseFloat(p.answers[q.id]);if(isNaN(v))return;
+    const d=Math.abs(v-f);if(d<best){best=d;w=[p.name]}else if(d===best)w.push(p.name);});
+  return w;
+}
+function score(p){
+  let s=0;
+  Q.forEach(q=>{const a=p.answers[q.id];
+    if(q.a!==undefined){if(a===q.a)s++;}
+    else if(q.o){if(S.fasit[q.id]!==undefined&&a===S.fasit[q.id])s++;}
+    else if(q.num){if(numWinners(q).includes(p.name))s++;}
+    else if((S.awards[q.id]||[]).includes(p.name))s++;
+  });
+  return s;
+}
+
+/* ===== Forside ===== */
+function whoHTML(){
+  if(!loaded)return `<p class="empty">Henter deltakere …</p>`;
+  if(loadErr)return `<p class="err">${esc(loadErr)}</p>`;
+  if(!S.players.length)return `<p class="empty">Ingen har startet ennå.</p>`;
+  return `<div class="list">${S.players.map(p=>`<div class="li"><span class="n">${esc(p.name)}</span><span class="pill ${p.done?"":"open"}">${p.done?"Ferdig":"Svarer nå"}</span></div>`).join("")}</div>`;
+}
+function renderWho(){const el=document.getElementById("who");if(el)el.innerHTML=whoHTML();
+  const c=document.getElementById("doneCount");if(c)c.textContent=`${done().length} ferdig`;}
+function home(){
+  const resume=me&&!me.done;
+  app.innerHTML=`
+  <header>
+    <div class="eyebrow">Utdrikningslag · The Well</div>
+    <h1>Hvor godt kjenner du Marianne?</h1>
+    <p class="lead">${Q.length} spørsmål. Svar på din egen telefon. Vinneren kåres når alle er ferdige.</p>
+  </header>
+  ${!CLOUD?`<p class="banner">Skylagring er ikke koblet til. Svarene lagres bare på denne telefonen.</p>`:""}
+  ${resume?`<section class="card">
+    <h2>Fortsett der du slapp</h2>
+    <p class="small">${esc(me.name)}, du har svart på ${Object.keys(me.answers).length} av ${Q.length} spørsmål.</p>
+    <div class="row"><button class="primary grow" id="resume">Fortsett som ${esc(me.name)}</button><button class="ghost" id="notMe">Ikke meg</button></div>
+  </section>`:""}
+  ${me&&me.done?`<section class="card"><h2>Takk, ${esc(me.name)}!</h2><p class="small">Svarene dine er levert. Nå er det bare å vente på kåringen.</p></section>`:""}
+  ${!resume&&!(me&&me.done)?`<form class="card" id="start">
+    <h2>Hvem er du?</h2>
+    <input type="text" id="name" placeholder="Fornavnet ditt" autocomplete="off" aria-label="Fornavnet ditt" maxlength="30">
+    <button class="primary" type="submit">Start quizen</button>
+    <p class="small err" id="msg"></p>
+  </form>`:""}
+  <section class="card">
+    <div class="meta"><h2>Deltakere</h2><span class="pill" id="doneCount">${done().length} ferdig</span></div>
+    <div id="who">${whoHTML()}</div>
+  </section>
+  <section class="card">
+    <h2>For quizmaster og Marianne</h2>
+    <div class="row">
+      <button id="toFasit">Mariannes fasit</button>
+      <button id="toRes" class="primary grow">Kår vinneren</button>
+    </div>
+    ${me&&me.done?`<button class="ghost" id="newPerson">Ny deltaker på denne telefonen</button>`:""}
+  </section>`;
+  const f=document.getElementById("start");
+  if(f)f.addEventListener("submit",async e=>{
+    e.preventDefault();const nameEl=document.getElementById("name"),msg=document.getElementById("msg");
+    const n=nameEl.value.trim();if(!n){nameEl.focus();return;}
+    const btn=f.querySelector("button");btn.disabled=true;btn.textContent="Sjekker navnet …";
+    await load();
+    if(loadErr){msg.textContent=loadErr;btn.disabled=false;btn.textContent="Start quizen";return;}
+    const p=findPlayer(n);
+    if(p&&p.done){msg.textContent=`${p.name} har allerede levert. Legg til etternavn eller forbokstav.`;btn.disabled=false;btn.textContent="Start quizen";return;}
+    me={name:p?p.name:n,answers:p?{...p.answers}:{},qi:0,done:false};
+    const first=Q.findIndex(q=>me.answers[q.id]===undefined);me.qi=first<0?0:first;saveMe();
+    send({type:"player",player:{name:me.name,answers:me.answers,done:false}}).catch(()=>{});
+    go("quiz");
+  });
+  const r=document.getElementById("resume");if(r)r.onclick=()=>go("quiz");
+  const nm=document.getElementById("notMe");if(nm)nm.onclick=()=>{me=null;saveMe();home();};
+  const np=document.getElementById("newPerson");if(np)np.onclick=()=>{me=null;saveMe();home();};
+  document.getElementById("toFasit").onclick=()=>gate("fasit");
+  document.getElementById("toRes").onclick=()=>gate("results");
+}
+
+/* ===== Quiz ===== */
+function quiz(){
+  const qi=me.qi,q=Q[qi],a=me.answers[q.id],last=qi===Q.length-1;
+  let body="";
+  if(q.o)body=`<div class="opts">${q.o.map((t,k)=>`<button class="opt ${a===k?"sel":""}" data-k="${k}" aria-pressed="${a===k}"><b>${L[k]}</b><span>${esc(t)}</span></button>`).join("")}</div>`;
+  else body=`<input type="${q.num?"number":"text"}" id="ans" ${q.num?'inputmode="numeric"':""} placeholder="${q.num?"Antall år":"Ditt svar"}" value="${esc(a??"")}" aria-label="Ditt svar">`;
+  app.innerHTML=`
+  <div class="meta"><span class="eyebrow">${esc(me.name)} svarer</span><span class="small">${qi+1} av ${Q.length}</span></div>
+  <div class="progress" aria-hidden="true">${Q.map((x,k)=>`<span class="${k===qi?"now":me.answers[x.id]!==undefined?"done":""}"></span>`).join("")}</div>
+  <section class="card">
+    <div class="meta"><span class="tag ${q.m?"m":""}">${esc(q.cat)}</span></div>
+    <h2 class="q">${esc(q.q)}</h2>
+    ${q.hint||(q.m&&!q.o)?`<p class="note">${esc(q.hint||"Skriv det du tror. Marianne er fasiten, og quizmaster deler ut poeng til slutt.")}</p>`:""}
+    ${body}
+    <div class="row">
+      <button id="prev" ${qi===0?"disabled":""}>Forrige</button>
+      <button id="next" class="primary grow">${last?"Lever svarene":"Neste"}</button>
+    </div>
+  </section>
+  <div class="row"><button id="pause" class="ghost">Ta en pause</button></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{me.answers[q.id]=+b.dataset.k;saveMe();
+    if(!last){me.qi++;saveMe();quiz();}else quiz();});
+  const inp=document.getElementById("ans");
+  const keep=()=>{if(!inp)return;const v=inp.value.trim();if(v)me.answers[q.id]=v;else delete me.answers[q.id];saveMe();};
+  if(inp){inp.addEventListener("input",keep);inp.addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("next").click();});}
+  document.getElementById("prev").onclick=()=>{keep();me.qi--;saveMe();quiz();};
+  document.getElementById("next").onclick=()=>{keep();if(!last){me.qi++;saveMe();quiz();}else submit();};
+  document.getElementById("pause").onclick=()=>{keep();
+    send({type:"player",player:{name:me.name,answers:me.answers,done:false}}).catch(()=>{});go("home");};
+}
+async function submit(){
+  app.innerHTML=`<section class="card winner"><div class="eyebrow">Sender</div><div class="crown">Et øyeblikk …</div><p>Svarene dine lagres.</p></section>`;
+  try{
+    await send({type:"player",player:{name:me.name,answers:me.answers,done:true}});
+    me.done=true;saveMe();
+    const miss=Q.filter(x=>me.answers[x.id]===undefined).length;
+    app.innerHTML=`<section class="card winner">
+      <div class="eyebrow">Levert</div>
+      <div class="crown">Takk, ${esc(me.name)}!</div>
+      <p>${miss?`Du hoppet over ${miss} spørsmål, men svarene er levert.`:"Alle svarene dine er lagret."} Poengene holdes hemmelig til vinneren kåres.</p>
+      <button class="primary" id="back">Til forsiden</button>
+    </section>`;
+    document.getElementById("back").onclick=()=>go("home");
+  }catch(e){
+    app.innerHTML=`<section class="card">
+      <h2>Svarene ble ikke sendt</h2>
+      <p class="err">Fikk ikke kontakt med lagringen. Svarene dine ligger trygt på telefonen. Sjekk at du har nett og prøv igjen.</p>
+      <div class="row"><button class="primary grow" id="retry">Prøv igjen</button><button id="backQ">Tilbake til spørsmålene</button></div>
+    </section>`;
+    document.getElementById("retry").onclick=submit;
+    document.getElementById("backQ").onclick=()=>go("quiz");
+  }
+}
+
+/* ===== Kode for quizmaster ===== */
+function gate(target){
+  if(host){go(target);return;}
+  gateTarget=target;
+  app.innerHTML=`<form class="card" id="pin">
+    <div class="eyebrow">Bare for quizmaster og Marianne</div>
+    <h2>Skriv inn koden</h2>
+    <input type="text" id="code" autocomplete="off" aria-label="Kode" placeholder="Kode">
+    <p class="small err" id="pmsg"></p>
+    <div class="row"><button type="button" id="cancel">Avbryt</button><button class="primary grow" type="submit">Åpne</button></div>
+  </form>`;
+  document.getElementById("code").focus();
+  document.getElementById("cancel").onclick=()=>go("home");
+  document.getElementById("pin").addEventListener("submit",e=>{e.preventDefault();
+    if(document.getElementById("code").value.trim().toLowerCase()===PIN.toLowerCase()){host=true;lsSet(K_HOST,true);go(gateTarget);}
+    else document.getElementById("pmsg").textContent="Feil kode. Spør quizmaster.";});
+}
+
+/* ===== Mariannes fasit ===== */
+async function saveFasit(){
+  setSave("Lagrer …");
+  try{await send({type:"fasit",fasit:S.fasit});setSave("Lagret ✓");}
+  catch(e){setSave("Ble ikke lagret. Sjekk nettet og prøv igjen.");}
+}
+function setSave(t){saveMsg=t;const el=document.getElementById("saveMsg");if(el)el.textContent=t;}
+async function fasit(){
+  const mq=Q.filter(q=>q.m);
+  app.innerHTML=`
+  <header>
+    <div class="eyebrow">Bare for Marianne</div>
+    <h1>Mariannes fasit</h1>
+    <p class="lead">Svar ærlig. Disse svarene avgjør hvem som får poeng på dine spørsmål.</p>
+  </header>
+  <section class="card">
+    ${mq.map(q=>`<div class="fq"><span class="t">${esc(q.q)}</span>${
+      q.o?`<div class="opts">${q.o.map((t,k)=>`<button class="opt ${S.fasit[q.id]===k?"sel":""}" data-q="${q.id}" data-k="${k}" aria-pressed="${S.fasit[q.id]===k}"><b>${L[k]}</b><span>${esc(t)}</span></button>`).join("")}</div>`
+      :`<input type="${q.num?"number":"text"}" data-q="${q.id}" value="${esc(S.fasit[q.id]??"")}" placeholder="${q.num?"Antall år":"Mariannes svar"}" aria-label="Mariannes svar">`
+    }</div>`).join("")}
+  </section>
+  <p class="small" id="saveMsg">${esc(saveMsg)}</p>
+  <div class="row"><button class="primary grow" id="back">Ferdig</button></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{S.fasit[b.dataset.q]=+b.dataset.k;
+    app.querySelectorAll(`.opt[data-q="${b.dataset.q}"]`).forEach(o=>{const on=o===b;o.classList.toggle("sel",on);o.setAttribute("aria-pressed",on);});
+    saveFasit();});
+  app.querySelectorAll("input[data-q]").forEach(i=>i.addEventListener("change",()=>{const v=i.value.trim();
+    if(v)S.fasit[i.dataset.q]=v;else delete S.fasit[i.dataset.q];saveFasit();}));
+  document.getElementById("back").onclick=()=>{saveMsg="";go("home");};
+}
+
+/* ===== Kåring ===== */
+function results(){
+  const d=done();
+  const ranked=d.map(p=>({p,s:score(p)})).sort((a,b)=>b.s-a.s);
+  const top=ranked.length?ranked[0].s:0;
+  const winners=ranked.filter(r=>r.s===top&&top>0);
+  const missingFasit=Q.filter(q=>q.m&&!isOpen(q)&&S.fasit[q.id]===undefined).length;
+  const notDone=S.players.filter(p=>!p.done);
+  const sy=window.scrollY;
+  app.innerHTML=`
+  <header>
+    <div class="eyebrow">Resultater</div>
+    <h1>Hvem kjenner Marianne best?</h1>
+  </header>
+  ${loadErr?`<p class="err">${esc(loadErr)}</p>`:""}
+  ${notDone.length?`<p class="banner">Svarer fortsatt: ${notDone.map(p=>esc(p.name)).join(", ")}</p>`:""}
+  ${winners.length?`<section class="card winner">
+      <div class="eyebrow">${winners.length>1?"Delt seier":"Vinneren er"}</div>
+      <div class="crown">${winners.map(w=>esc(w.p.name)).join(" og ")}</div>
+      <p>${top} av ${Q.length} poeng</p>
+    </section>`
+    :`<section class="card"><p class="empty">${d.length?"Ingen poeng ennå. Sjekk at Marianne har fylt inn fasit, og del ut poeng for fritekstsvar under.":"Ingen har levert svar ennå."}</p></section>`}
+  ${d.length?`<section class="card">
+    <div class="meta"><h2>Poengtavle</h2><button id="refresh" class="ghost">Oppdater</button></div>
+    <div class="list">${ranked.map((r,k)=>`<div class="li"><span class="rank">${k+1}.</span><span class="n">${esc(r.p.name)}</span><span class="s">${r.s}</span></div>`).join("")}</div>
+    <p class="small">${missingFasit?`Marianne mangler fasit på ${missingFasit} av sine flervalgsspørsmål.`:"Marianne har fylt inn fasit på flervalgsspørsmålene sine."} Listen oppdateres av seg selv.</p>
+  </section>
+  <section class="card">
+    <h2>Del ut poeng for fritekst</h2>
+    <p class="small">Les opp svarene, la Marianne avgjøre, og trykk «Poeng» på de som traff.</p>
+    ${Q.filter(isOpen).map(q=>`<div class="fq"><span class="t">${esc(q.q)}</span>
+      ${S.fasit[q.id]?`<span class="small">Marianne: ${esc(S.fasit[q.id])}</span>`:""}
+      <div>${d.map(p=>{const on=(S.awards[q.id]||[]).includes(p.name);
+        return `<div class="guess"><span class="who">${esc(p.name)}</span><span class="what">${esc(p.answers[q.id]??"–")}</span><button class="${on?"on":""}" data-q="${q.id}" data-n="${esc(p.name)}" aria-pressed="${on}">${on?"Poeng ✓":"Poeng"}</button></div>`}).join("")}</div>
+    </div>`).join("")}
+    ${Q.filter(q=>q.num).map(q=>{const w=numWinners(q);return `<div class="fq"><span class="t">${esc(q.q)}</span>
+      <span class="small">${S.fasit[q.id]?`Marianne: ${esc(S.fasit[q.id])} år. Nærmest: ${w.length?w.map(esc).join(", "):"ingen"}.`:"Marianne må fylle inn antall år i fasiten. Poenget går automatisk til den som er nærmest."}</span>
+      <div>${d.map(p=>`<div class="guess"><span class="who">${esc(p.name)}</span><span class="what">${esc(p.answers[q.id]??"–")}</span></div>`).join("")}</div></div>`}).join("")}
+  </section>`:""}
+  <div class="row"><button id="back">Til forsiden</button><button id="toFasit" class="grow">Mariannes fasit</button></div>
+  <div class="row"><button id="reset" class="ghost warn">${confirmReset?"Trykk igjen for å slette alle svar":"Nullstill quizen"}</button></div>`;
+  window.scrollTo(0,sy);
+  app.querySelectorAll("button[data-n]").forEach(b=>b.onclick=async()=>{
+    const arr=S.awards[b.dataset.q]||(S.awards[b.dataset.q]=[]);const n=b.dataset.n;const i=arr.indexOf(n);
+    if(i>=0)arr.splice(i,1);else arr.push(n);results();
+    try{await send({type:"awards",awards:S.awards});}catch(e){loadErr="Poenget ble ikke lagret. Sjekk nettet og trykk igjen.";}
+    results();});
+  const rf=document.getElementById("refresh");if(rf)rf.onclick=async()=>{rf.textContent="Henter …";await load();results();};
+  document.getElementById("back").onclick=()=>go("home");
+  document.getElementById("toFasit").onclick=()=>go("fasit");
+  document.getElementById("reset").onclick=async()=>{
+    if(!confirmReset){confirmReset=true;results();return;}
+    confirmReset=false;
+    try{await send({type:"reset"});me=null;saveMe();}catch(e){loadErr="Fikk ikke nullstilt. Sjekk nettet.";}
+    results();};
+}
+
+/* ===== Navigasjon ===== */
+function go(v){view=v;if(v!=="results")confirmReset=false;window.scrollTo(0,0);
+  ({home,quiz,fasit,results}[v]||home)();}
+
+(async function start(){
+  go("home");
+  await load();
+  if(view==="home")renderWho();
+  if(CLOUD)setInterval(async()=>{if(view!=="home"&&view!=="results")return;await load();
+    if(view==="home")renderWho();if(view==="results")results();},15000);
+})();
+</script>
+</body>
+</html>
