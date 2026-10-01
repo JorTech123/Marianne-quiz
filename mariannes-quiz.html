@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mariannes store quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone passed around; each person gets their own run, then a shared results screen */
+:root{
+  --bg:#eef1ec; --surface:#ffffff; --ink:#22302a; --muted:#5f6e66;
+  --sage:#4f7a63; --sage-soft:#dbe7df; --blush:#c9867a; --blush-soft:#f5e3de; --line:#cfd8d1;
+  --display:"Young Serif", Georgia, serif; --body:"Figtree", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151c18; --surface:#1e2722; --ink:#e7eee9; --muted:#9aaba1;
+  --sage:#86b89c; --sage-soft:#26352d; --blush:#e3a596; --blush-soft:#3a2a26; --line:#2f3c35; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151c18; --surface:#1e2722; --ink:#e7eee9; --muted:#9aaba1;
+  --sage:#86b89c; --sage-soft:#26352d; --blush:#e3a596; --blush-soft:#3a2a26; --line:#2f3c35; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--muted);margin-top:6px}
+.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);font-weight:700}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.progress{display:flex;gap:3px}
+.progress span{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.progress span.done{background:var(--sage)}
+.progress span.now{background:var(--blush)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--sage-soft);color:var(--sage)}
+.tag.m{background:var(--blush-soft);color:var(--blush)}
+.q{font-family:var(--display);font-size:clamp(1.3rem,4.5vw,1.6rem);line-height:1.25;margin:0;text-wrap:balance}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:460px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;gap:10px;align-items:baseline;text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:500;min-width:0;background:var(--surface);color:var(--ink)}
+.opt b{color:var(--muted);font-weight:700}
+.opt.sel{border-color:var(--sage);background:var(--sage-soft)}
+.opt.sel b{color:var(--sage)}
+.note{border:1.5px dashed var(--blush);border-radius:12px;padding:12px 14px;color:var(--muted);background:var(--blush-soft);font-size:.95rem}
+input[type=text],input[type=number]{width:100%;font:inherit;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row .grow{flex:1}
+button{font:inherit;font-weight:600;border-radius:12px;padding:11px 18px;cursor:pointer;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+button.primary{background:var(--sage);border-color:var(--sage);color:var(--surface)}
+button.ghost{background:transparent}
+button.warn{border-color:var(--blush);color:var(--blush)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--blush);outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .n{flex:1;min-width:0;font-weight:600;overflow-wrap:anywhere}
+.li .s{font-variant-numeric:tabular-nums;font-family:var(--display);font-size:1.3rem}
+.pill{font-size:.75rem;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--sage-soft);color:var(--sage)}
+.pill.open{background:var(--blush-soft);color:var(--blush)}
+.winner{text-align:center;padding:26px 22px;background:var(--sage-soft);border-color:var(--sage)}
+.winner .crown{font-family:var(--display);font-size:clamp(2rem,8vw,3rem);line-height:1.1;color:var(--sage);overflow-wrap:anywhere}
+.rank{width:1.6em;color:var(--muted);font-variant-numeric:tabular-nums}
+.guess{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.guess:last-child{border-bottom:0}
+.guess .who{font-weight:600;min-width:5.5em}
+.guess .what{flex:1;min-width:0;overflow-wrap:anywhere;color:var(--muted)}
+.guess button{padding:5px 12px;font-size:.9rem}
+.guess button.on{background:var(--sage);border-color:var(--sage);color:var(--surface)}
+.fq{display:flex;flex-direction:column;gap:10px;padding-block:14px;border-bottom:1px solid var(--line)}
+.fq:last-child{border-bottom:0}
+.fq .t{font-weight:600}
+.small{font-size:.85rem;color:var(--muted)}
+.empty{color:var(--muted);font-style:italic}
+@media (prefers-reduced-motion:no-preference){.card{animation:in .3s ease}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+const Q = [
+  {id:"f1",cat:"Fødselen",q:"Hvilken dato ble Marianne født?",o:["20. mai 1982","2. mai 1982","2. juni 1982","2. mai 1983"],a:1},
+  {id:"f2",cat:"Fødselen",q:"Hvilken by ble hun født i?",o:["Drammen","Lillehammer","Oslo","Bergen"],a:2},
+  {id:"f3",cat:"Fødselen",q:"Hvor mye veide hun da hun kom til verden?",o:["2950 gram","3400 gram","3850 gram","4200 gram"],a:1},
+  {id:"f4",cat:"Fødselen",q:"Hvor lang var hun?",o:["48 cm","50 cm","52 cm","55 cm"],a:2},
+  {id:"f5",cat:"Fødselen",q:"Hva var klokka da hun ble født?",o:["06.45 om morgenen","14.10 på ettermiddagen","21.20 på kvelden","23.55, rett før midnatt"],a:2},
+  {id:"f6",cat:"Fødselen",q:"Hvilket stjernetegn er Marianne?",o:["Vær","Tvilling","Tyr","Kreps"],a:2},
+  {id:"c1",cat:"Claus",q:"Hva heter Mariannes forlovede til etternavn?",o:["Hagen","Hygen","Haugen","Hylland"],a:1},
+  {id:"c2",cat:"Claus",q:"Hvor møtte Marianne og Claus hverandre?",o:["På Tinder","På jobb i Disney","På en fest i New York","På studiet"],a:1},
+  {id:"c3",cat:"Claus",q:"Hva var de for hverandre i starten?",o:["Kjærester fra første dag","Kolleger som ikke tålte hverandre","Gode venner","Naboer"],a:2},
+  {id:"c4",cat:"Claus",q:"Hvor var Marianne da det endelig oppsto søt musikk?",o:["På studieopphold i New York","På ferie i Paris","På Disney World i Florida","På hytta"],a:0},
+  {id:"c5",cat:"Claus",q:"Hva gjorde Claus som fikk det til å klaffe?",o:["Sendte et kjærlighetsbrev","Overrasket henne med besøk i New York","Fridde på et Disney-slott","Ringte henne hver kveld i et år"],a:1},
+  {id:"c6",cat:"Claus",q:"Marianne har alltid sagt at hvis Claus ikke fridde innen hun fylte en viss alder, ville hun ikke gifte seg. Hvilken alder?",o:["30 år","35 år","40 år","45 år"],a:2},
+  {id:"m1",cat:"Marianne svarer",m:true,num:true,q:"Hvor mange år har Marianne og Claus vært sammen?",hint:"Skriv et tall. Den som er nærmest Mariannes svar får poenget."},
+  {id:"m2",cat:"Marianne svarer",m:true,q:"Hvor mange kjæledyr har Marianne hatt, og hva het de?",hint:"Skriv antall og så mange navn du husker."},
+  {id:"m3",cat:"Marianne svarer",m:true,q:"Hva het Mariannes første kjæreste?"},
+  {id:"m4",cat:"Marianne svarer",m:true,q:"Hvem ville Marianne tatt med seg på en øde øy?"},
+  {id:"m5",cat:"Marianne svarer",m:true,q:"Hvis Marianne fikk 10 millioner kroner, hva ville hun brukt dem på?",o:["Drømmehus med spa i kjelleren","Jorda rundt, med første stopp i New York","Sesongkort til alle Disney-parkene i verden"]},
+  {id:"m6",cat:"Marianne svarer",m:true,q:"Hva irriterer Marianne mest?",o:["Folk som kommer for sent","Sokker som blir liggende på gulvet","Folk som tygger med åpen munn","Når Claus sier «vi får se»"]},
+  {id:"m7",cat:"Marianne svarer",m:true,q:"Hva var det første Marianne tenkte da Claus dukket opp i New York?"},
+  {id:"m8",cat:"Marianne svarer",m:true,q:"Hvilken Disney-figur ligner Claus mest på?"},
+  {id:"m9",cat:"Marianne svarer",m:true,q:"Hvem sa «jeg elsker deg» først?",o:["Marianne","Claus"]}
+];
+const L="ABCD";
+const KEY="marianne-quiz-v2";
+let S={players:[],fasit:{},awards:{}};
+let view="home", cur=null, qi=0, confirmReset=false;
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isOpen=q=>!q.o&&!q.num;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function player(name){return S.players.find(p=>p.name.toLowerCase()===name.toLowerCase())}
+
+function numWinners(q){
+  const f=parseFloat(S.fasit[q.id]); if(isNaN(f)) return [];
+  let best=Infinity, w=[];
+  S.players.filter(p=>p.done).forEach(p=>{const v=parseFloat(p.answers[q.id]); if(isNaN(v))return;
+    const d=Math.abs(v-f); if(d<best){best=d;w=[p.name]} else if(d===best) w.push(p.name);});
+  return w;
+}
+function score(p){
+  let s=0;
+  Q.forEach(q=>{const a=p.answers[q.id];
+    if(q.a!==undefined){ if(a===q.a) s++; }
+    else if(q.o){ if(S.fasit[q.id]!==undefined && a===S.fasit[q.id]) s++; }
+    else if(q.num){ if(numWinners(q).includes(p.name)) s++; }
+    else if((S.awards[q.id]||[]).includes(p.name)) s++;
+  });
+  return s;
+}
+
+/* ---------- views ---------- */
+function home(){
+  const done=S.players.filter(p=>p.done);
+  app.innerHTML=`
+  <header>
+    <div class="eyebrow">Utdrikningslag · The Well</div>
+    <h1>Hvor godt kjenner du Marianne?</h1>
+    <p class="lead">${Q.length} spørsmål. Skriv navnet ditt, svar i fred og ro, og send telefonen videre. Vinneren kåres til slutt.</p>
+  </header>
+  <form class="card" id="start">
+    <h2>Hvem er du?</h2>
+    <input type="text" id="name" placeholder="Fornavnet ditt" autocomplete="off" aria-label="Fornavnet ditt" maxlength="30">
+    <button class="primary" type="submit">Start quizen</button>
+    <p class="small" id="msg"></p>
+  </form>
+  <section class="card">
+    <div class="meta"><h2>Har svart</h2><span class="pill">${done.length} ferdig</span></div>
+    ${S.players.length?`<div class="list">${S.players.map(p=>`<div class="li"><span class="n">${esc(p.name)}</span><span class="pill ${p.done?"":"open"}">${p.done?"Ferdig":"Ikke ferdig"}</span></div>`).join("")}</div>`
+      :`<p class="empty">Ingen har svart ennå. Den første som skriver navnet sitt over, starter.</p>`}
+  </section>
+  <section class="card">
+    <h2>For quizmaster og Marianne</h2>
+    <p class="small">Marianne fyller inn fasit på sine egne spørsmål. Resultatene bør vises når alle er ferdige.</p>
+    <div class="row">
+      <button id="toFasit">Mariannes fasit</button>
+      <button id="toRes" class="primary grow">Kår vinneren</button>
+    </div>
+    <div class="row">
+      <button id="reset" class="ghost warn">${confirmReset?"Trykk igjen for å slette alle svar":"Nullstill quizen"}</button>
+    </div>
+  </section>`;
+  const nameEl=document.getElementById("name");
+  document.getElementById("start").addEventListener("submit",e=>{
+    e.preventDefault(); const n=nameEl.value.trim(); if(!n){nameEl.focus();return;}
+    let p=player(n);
+    if(p&&p.done){document.getElementById("msg").textContent=`${p.name} har allerede levert. Bruk et annet navn, for eksempel med etternavn.`;return;}
+    if(!p){p={name:n,answers:{},done:false};S.players.push(p);save();}
+    cur=p; qi=Q.findIndex(q=>p.answers[q.id]===undefined); if(qi<0)qi=0; go("quiz");
+  });
+  document.getElementById("toFasit").onclick=()=>go("fasit");
+  document.getElementById("toRes").onclick=()=>go("results");
+  document.getElementById("reset").onclick=()=>{
+    if(!confirmReset){confirmReset=true;home();return;}
+    S={players:[],fasit:{},awards:{}};confirmReset=false;save();home();
+  };
+}
+
+function quiz(){
+  const q=Q[qi], a=cur.answers[q.id];
+  let body="";
+  if(q.o) body=`<div class="opts">${q.o.map((t,k)=>`<button class="opt ${a===k?"sel":""}" data-k="${k}" aria-pressed="${a===k}"><b>${L[k]}</b><span>${esc(t)}</span></button>`).join("")}</div>`;
+  else body=`<input type="${q.num?"number":"text"}" id="ans" ${q.num?'inputmode="numeric"':""} placeholder="${q.num?"Antall år":"Ditt svar"}" value="${esc(a??"")}" aria-label="Ditt svar">`;
+  const last=qi===Q.length-1;
+  app.innerHTML=`
+  <div class="meta"><span class="eyebrow">${esc(cur.name)} svarer</span><span class="small">${qi+1} av ${Q.length}</span></div>
+  <div class="progress" aria-hidden="true">${Q.map((x,k)=>`<span class="${k===qi?"now":cur.answers[x.id]!==undefined?"done":""}"></span>`).join("")}</div>
+  <section class="card">
+    <div class="meta"><span class="tag ${q.m?"m":""}">${esc(q.cat)}</span></div>
+    <h2 class="q">${esc(q.q)}</h2>
+    ${q.hint||q.m&&!q.o?`<p class="note">${esc(q.hint||"Skriv det du tror. Marianne er fasiten, og quizmaster deler ut poeng til slutt.")}</p>`:""}
+    ${body}
+    <div class="row">
+      <button id="prev" ${qi===0?"disabled":""}>Forrige</button>
+      <button id="next" class="primary grow">${last?"Lever svarene":"Neste"}</button>
+    </div>
+  </section>
+  <div class="row"><button id="pause" class="ghost">Avbryt og fortsett senere</button></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{cur.answers[q.id]=+b.dataset.k;save();
+    if(!last){qi++;quiz();} else quiz();});
+  const inp=document.getElementById("ans");
+  const keep=()=>{ if(!inp)return; const v=inp.value.trim(); if(v)cur.answers[q.id]=v; else delete cur.answers[q.id]; save(); };
+  if(inp){inp.addEventListener("input",keep);inp.addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("next").click();});}
+  document.getElementById("prev").onclick=()=>{keep();qi--;quiz();};
+  document.getElementById("next").onclick=()=>{keep();
+    if(!last){qi++;quiz();return;}
+    const miss=Q.filter(x=>cur.answers[x.id]===undefined).length;
+    cur.done=true;save();go("thanks",miss);};
+  document.getElementById("pause").onclick=()=>{keep();cur=null;go("home");};
+}
+
+function thanks(miss){
+  app.innerHTML=`
+  <section class="card winner">
+    <div class="eyebrow">Levert</div>
+    <div class="crown">Takk, ${esc(cur.name)}!</div>
+    <p>${miss?`Du hoppet over ${miss} spørsmål, men svarene er levert.`:"Alle svarene dine er lagret."} Poengene dine holdes hemmelig til vinneren kåres.</p>
+    <button class="primary" id="back">Gi telefonen videre</button>
+  </section>`;
+  document.getElementById("back").onclick=()=>{cur=null;go("home");};
+}
+
+function fasit(){
+  const mq=Q.filter(q=>q.m);
+  app.innerHTML=`
+  <header>
+    <div class="eyebrow">Bare for Marianne</div>
+    <h1>Mariannes fasit</h1>
+    <p class="lead">Svar ærlig. Disse svarene avgjør hvem som får poeng på dine spørsmål. Alt lagres med en gang.</p>
+  </header>
+  <section class="card">
+    ${mq.map(q=>`<div class="fq"><span class="t">${esc(q.q)}</span>${
+      q.o?`<div class="opts">${q.o.map((t,k)=>`<button class="opt ${S.fasit[q.id]===k?"sel":""}" data-q="${q.id}" data-k="${k}" aria-pressed="${S.fasit[q.id]===k}"><b>${L[k]}</b><span>${esc(t)}</span></button>`).join("")}</div>`
+      :`<input type="${q.num?"number":"text"}" data-q="${q.id}" value="${esc(S.fasit[q.id]??"")}" placeholder="${q.num?"Antall år":"Mariannes svar"}" aria-label="Mariannes svar">`
+    }</div>`).join("")}
+  </section>
+  <div class="row"><button class="primary grow" id="back">Ferdig</button></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{S.fasit[b.dataset.q]=+b.dataset.k;save();fasit();});
+  app.querySelectorAll("input[data-q]").forEach(i=>i.addEventListener("input",()=>{const v=i.value.trim();if(v)S.fasit[i.dataset.q]=v;else delete S.fasit[i.dataset.q];save();}));
+  document.getElementById("back").onclick=()=>go("home");
+}
+
+function results(){
+  const done=S.players.filter(p=>p.done);
+  const ranked=done.map(p=>({p,s:score(p)})).sort((a,b)=>b.s-a.s);
+  const top=ranked.length?ranked[0].s:0;
+  const winners=ranked.filter(r=>r.s===top&&top>0);
+  const missingFasit=Q.filter(q=>q.m&&!isOpen(q)&&S.fasit[q.id]===undefined).length;
+  const openQs=Q.filter(isOpen);
+  const fixed=Q.filter(q=>q.a!==undefined).length;
+  app.innerHTML=`
+  <header>
+    <div class="eyebrow">Resultater</div>
+    <h1>Hvem kjenner Marianne best?</h1>
+  </header>
+  ${winners.length?`<section class="card winner">
+      <div class="eyebrow">${winners.length>1?"Delt seier":"Vinneren er"}</div>
+      <div class="crown">${winners.map(w=>esc(w.p.name)).join(" og ")}</div>
+      <p>${top} av ${Q.length} poeng</p>
+    </section>`
+    :`<section class="card"><p class="empty">${done.length?"Ingen poeng ennå. Sjekk at Marianne har fylt inn fasit og del ut poeng for fritekstsvar under.":"Ingen har levert svar ennå."}</p></section>`}
+  ${done.length?`<section class="card">
+    <h2>Poengtavle</h2>
+    <div class="list">${ranked.map((r,k)=>`<div class="li"><span class="rank">${k+1}.</span><span class="n">${esc(r.p.name)}</span><span class="s">${r.s}</span></div>`).join("")}</div>
+    <p class="small">${fixed} spørsmål har fast fasit. ${missingFasit?`Marianne mangler fasit på ${missingFasit} av sine flervalgsspørsmål.`:"Marianne har fylt inn fasit på flervalgsspørsmålene sine."}</p>
+  </section>`:""}
+  ${done.length?`<section class="card">
+    <h2>Del ut poeng for fritekst</h2>
+    <p class="small">Les opp svarene, la Marianne avgjøre, og trykk «Poeng» på de som traff. Poengtavlen oppdateres med en gang.</p>
+    ${openQs.map(q=>`<div class="fq"><span class="t">${esc(q.q)}</span>
+      ${S.fasit[q.id]?`<span class="small">Marianne: ${esc(S.fasit[q.id])}</span>`:""}
+      <div>${done.map(p=>{const on=(S.awards[q.id]||[]).includes(p.name);
+        return `<div class="guess"><span class="who">${esc(p.name)}</span><span class="what">${esc(p.answers[q.id]??"–")}</span><button class="${on?"on":""}" data-q="${q.id}" data-n="${esc(p.name)}" aria-pressed="${on}">${on?"Poeng ✓":"Poeng"}</button></div>`}).join("")}</div>
+    </div>`).join("")}
+    ${Q.filter(q=>q.num).map(q=>{const w=numWinners(q);return `<div class="fq"><span class="t">${esc(q.q)}</span>
+      <span class="small">${S.fasit[q.id]?`Marianne: ${esc(S.fasit[q.id])} år. Nærmest: ${w.length?w.map(esc).join(", "):"ingen"}.`:"Marianne må fylle inn antall år i fasiten. Poenget går automatisk til den som er nærmest."}</span>
+      <div>${done.map(p=>`<div class="guess"><span class="who">${esc(p.name)}</span><span class="what">${esc(p.answers[q.id]??"–")}</span></div>`).join("")}</div></div>`}).join("")}
+  </section>`:""}
+  <div class="row"><button id="back">Tilbake</button><button id="toFasit" class="grow">Mariannes fasit</button></div>`;
+  app.querySelectorAll("button[data-n]").forEach(b=>b.onclick=()=>{
+    const arr=S.awards[b.dataset.q]||(S.awards[b.dataset.q]=[]); const n=b.dataset.n; const i=arr.indexOf(n);
+    if(i>=0)arr.splice(i,1); else arr.push(n); save(); results();});
+  document.getElementById("back").onclick=()=>go("home");
+  document.getElementById("toFasit").onclick=()=>go("fasit");
+}
+
+function go(v,arg){view=v;if(v!=="home")confirmReset=false;window.scrollTo(0,0);
+  ({home,quiz,fasit,results}[v]||(()=>thanks(arg)))(arg);}
+
+function start(d){
+  if(d&&d.S){S=d.S;}
+  else{try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.players)S=s;}catch(e){}}
+  go("home");
+}
+window.claude?.hot?.snapshot?.(()=>({S}));
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+</script>
+</body>
+</html>
